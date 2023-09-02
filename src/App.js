@@ -358,9 +358,7 @@ export default function App() {
     addApplesToBaskets();
   };
 
-  // Call sortArrangeAndAddApples whenever you want to perform these tasks
 
-  // Call drawApplesInsideBaskets to draw apples inside the baskets
 
   return (
     <div>
