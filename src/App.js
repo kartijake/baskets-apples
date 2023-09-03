@@ -27,29 +27,26 @@ export default function App() {
   const [baskets, setBaskets] = useState([]);
   const basketsRef = useRef(baskets);
   const [scene, setScene] = useState(new THREE.Scene());
-  let TableSize = { width: 20, height: 20 };
-  let AppleRadius = 0.5;
-  
-  // const [raycaster, setRaycaster] = useState(new THREE.Raycaster());
-  // const rayCasterRef = useRef(raycaster);
-  const [drag, setDrag] = useState("");
-  const draggedRef = useRef(drag);
+  let TableSize = { width: 140, height: 140 };
+  let AppleRadius = 2.5;
+
   const camera = new THREE.PerspectiveCamera(
-    75,
+    100,
     window.innerWidth / window.innerHeight,
     0.1,
     1000
   );
+
   const renderer = new THREE.WebGLRenderer();
   const Table = Basket(TableSize, {
-    color: 0xfffffff,
+    color: 0x966F33,
     side: THREE.DoubleSide,
-    visible: false,
+    // visible: false,
   });
   Table.rotateX(-Math.PI / 2);
   scene.add(Table);
-  const grid = new THREE.GridHelper(TableSize.width, TableSize.height);
-  scene.add(grid);
+  // const grid = new THREE.GridHelper(TableSize.width, TableSize.height);
+  // scene.add(grid);
 
   const Init = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -82,9 +79,7 @@ export default function App() {
     };
   }, []);
 
-
   useEffect(() => {
-    // rayCasterRef.current = raycaster;
     basketsRef.current = baskets;
     BasketAppleRef.current = BasketsApple;
   }, [baskets, BasketsApple]);
@@ -95,14 +90,6 @@ export default function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!openModal) {
-  //     window.addEventListener("mousedown", HandleClick);
-  //   }
-  //   return () => {
-  //     window.removeEventListener("mousedown", HandleClick);
-  //   };
-  // }, []);
 
   const HandleClick = (clientX, clientY, draggedData) => {
     const mousePosition = new THREE.Vector2();
@@ -113,7 +100,7 @@ export default function App() {
     raycaster.setFromCamera(mousePosition, camera);
 
     const currentBaskets = basketsRef.current;
-    console.log(mousePosition.x,mousePosition.y)
+    console.log(mousePosition.x, mousePosition.y);
     let basketsIntersections = raycaster.intersectObjects(currentBaskets);
     if (draggedData === "apple" && basketsIntersections.length > 0) {
       addApple(basketsIntersections[0].object);
@@ -121,7 +108,7 @@ export default function App() {
 
     if (draggedData === "basket") {
       let intersects = raycaster.intersectObject(Table);
-      console.log(intersects)
+      console.log(intersects);
       if (basketsIntersections.length > 0) {
         return toast("Already a basket exists");
       }
@@ -135,7 +122,7 @@ export default function App() {
 
   const CreateBasket = (data) => {
     const intersect = instance;
-    console.log(instance)
+    console.log(instance);
     const highlightPos = new THREE.Vector3()
       .copy(intersect.point)
       .floor()
@@ -162,7 +149,7 @@ export default function App() {
         side: THREE.DoubleSide,
       }
     );
-    console.log(highlightPos)
+    console.log(highlightPos);
     newBasket.rotateX(-Math.PI / 2);
     newBasket.position.set(highlightPos.x, 0.1, highlightPos.z);
     const newBasketBoundingBox = new THREE.Box3().setFromObject(newBasket);
@@ -197,7 +184,7 @@ export default function App() {
   };
 
   const addApple = (instance) => {
-    console.log("clicked",instance);
+    console.log("clicked", instance);
     let appleRadius = AppleRadius;
     const apple = Apple(
       { radius: appleRadius },
@@ -336,94 +323,76 @@ export default function App() {
     addApplesToBaskets();
   };
 
-  // useEffect(() => {
-  //   const target = document.getElementById("droptarget");
-
-  //   target.addEventListener("dragover", (event) => {
-  //     event.preventDefault();
-  //   });
-
-  //   target.addEventListener("drop", (event) => {
-  //     event.preventDefault();
-  //     console.log(event)
-  //       // HandleClick(event);
-  //   });
-  // }, []);
-
   useEffect(() => {
-    // Get a reference to your drop target element
     const dropTarget = document.getElementById("droptarget");
 
-    // Add an event listener for the dragover event
     const handleDragOver = (e) => {
       e.preventDefault();
-      // Add your custom styling or visual feedback
     };
     dropTarget.addEventListener("dragover", handleDragOver);
 
-    // Add an event listener for the drop event
     const handleDrop = (e) => {
       e.preventDefault();
       const draggedData = e.dataTransfer.getData("text/plain");
       const clientX = e.clientX;
       const clientY = e.clientY;
       HandleClick(clientX, clientY, draggedData);
-      // Add your custom logic or feedback
     };
     dropTarget.addEventListener("drop", handleDrop);
-
-    // Clean up the event listeners when the component unmounts
     return () => {
       dropTarget.removeEventListener("dragover", handleDragOver);
       dropTarget.removeEventListener("drop", handleDrop);
     };
-  }, [])
+  }, []);
   return (
     <div>
-      <div
-        id="droptarget"
-        // onDrop={(e) => {
-        //   e.preventDefault();
-        //   const draggedData = e.dataTransfer.getData("text/plain"); // Get the drag data
-        //   console.log("Dropped data:", draggedData);
-        //   console.log("Dropped data:", e.clientX);
-        //   HandleClick(e.clientX, e.clientY, draggedData);
-        // }}
-        // onDragOver={(e) => {
-        //   e.preventDefault();
-        // }}
-        ref={refContainer}
-      ></div>
+      <div id="droptarget" ref={refContainer}></div>
       <ModalSkeleton
         SubmissionHandler={CreateBasket}
         openModal={openModal}
         setOpenModal={setOpenModal}
         setInstance={setInstance}
       />
-      <div className="fixed h-[80vh] top-10 left-5 rounded-md bg-white shadow-md px-5">
-      
-          <div>
-        <div
-          draggable="true"
-          onDragStart={(e) => {
-            e.dataTransfer.setData("text/plain", "basket"); // Set the drag data
-          }}
-          className="w-14 h-14 bg-red-600"
-        > 
-                 
-        </div>
-            <span className="text-gray-700 text-sm"> Drag Drop to add Basket</span>
+      <div className="fixed h-[80vh] top-10 left-5 rounded-md bg-white shadow-md px-5 max-w-[250px]">
+        <div className="my-5">
+          <div >
+            <div
+              draggable="true"
+              onDragStart={(e) => {
+                e.dataTransfer.setData("text/plain", "basket"); 
+              }}
+              className="w-14 h-10 bg-red-600"
+            ></div>
+            <span className="text-sm text-gray-800 text font-semibold my-1">
+              {" "}
+              Drag Drop to add Basket
+            </span>
           </div>
-        <div
-          draggable="true"
-          onDragStart={(e) => {
-            e.dataTransfer.setData("text/plain", "apple"); // Set the drag data
-          }}
-          className="w-7 h-7 rounded-full bg-blue-600"
-        >
+          <div>
+            <div
+              draggable="true"
+              onDragStart={(e) => {
+                e.dataTransfer.setData("text/plain", "apple"); // Set the drag data
+              }}
+              className="w-7 h-7 rounded-full bg-blue-600"
+            ></div>
+            <span className="text-sm text-gray-700 font-semibold">
+              Drag and drop on baskets to add apples
+            </span>
+          </div>
         </div>
-
-  <button type="button" onClick={() => sortArrangeAndAddApples()} className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Sort Baskets</button>
+        <div className="my-3">
+          <p className="text-sm text-gray-800 text font-semibold my-1">
+            Sort baskets by apples
+          </p>
+          <button
+            type="button"
+            onClick={() => sortArrangeAndAddApples()}
+            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+          >
+            Sort
+          </button>
+        </div>
       </div>
     </div>
   );

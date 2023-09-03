@@ -23,8 +23,8 @@ export default function BoxInputForm({handleSubmission}) {
         <TextInput
           {...register("bWidth", {
             required: true,
-            // pattern: /^(?:[1-6][0-9]|70|10)$/,
-            // validate: (e) => e % 5 == 0,
+            pattern: /^(?:[1-6][0-9]|70|10)$/,
+            validate: (e) => e % 5 == 0,
           })}
           id="bWidth"
           placeholder="10"
@@ -50,8 +50,8 @@ export default function BoxInputForm({handleSubmission}) {
         <TextInput
           {...register("bHeight", {
             required: true,
-            // pattern: /^(?:[1-6][0-9]|70|10)$/,
-            // validate: (e) => e % 5 == 0,
+            pattern: /^(?:[1-6][0-9]|70|10)$/,
+            validate: (e) => e % 5 == 0,
           })}
           id="bHeight"
           placeholder="5"
