@@ -18,6 +18,6 @@ Use `npm i` to install all the dependencies from within the project directory by
 Runs the app in the developemnt mode.\
 App will run on [http://localhost:3030](http://localhost:3000)
 ## Demo
-
+![alt text](https://github.com/kartijake/baskets-apples/blob/master/demo/demo.gif "Demo gif")
 
 
